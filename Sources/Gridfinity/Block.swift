@@ -11,6 +11,8 @@ public struct Block: Shape3D {
     /// The total height of the block in millimeters.
     public let height: Double
     public let useMagnet: Bool
+	public let useCenteredMagnet: Bool
+	
     let base = Base()
     
 	let magnetInset = 8.0
@@ -18,10 +20,11 @@ public struct Block: Shape3D {
 	let magnetDepth = 2.2
 	let magnetMargin = 3.0
     
-    public init(size: Units2D, height: Double, withMagnet: Bool = false) {
+    public init(size: Units2D, height: Double, withMagnet: Bool = false, withCenteredMagnet: Bool = false) {
         self.size = size
         self.height = height
         self.useMagnet = withMagnet
+		self.useCenteredMagnet = withCenteredMagnet
     }
 
     public init(size: Units3D) {
@@ -37,6 +40,12 @@ public struct Block: Shape3D {
                         .translated(x: -Units2D.size.x / 2, y: -Units2D.size.x / 2)
                         .symmetry(over: .xy)
                 }
+				if useCenteredMagnet {
+					Cylinder(diameter: magnetDiameter, height: magnetDepth)
+						.translated(x: -Units2D.size.x / 2 , y: Units2D.size.y / 2)
+						.translated(x: Units2D.size.x / 2, y: -Units2D.size.x / 2)
+						
+				}
             }
             .repeated(along: .x, step: Units2D.size.x, count: size.x)
             .repeated(along: .y, step: Units2D.size.y, count: size.y)

@@ -16,7 +16,7 @@ public struct Baseplate: Shape3D {
     }
 
     private var needsFoundation: Bool {
-        options.intersection([.foundation, .magnets, .screws, .tabs]).isEmpty == false
+        options.intersection([.foundation, .magnets, .screws, .tabs, .magnetCenter]).isEmpty == false
     }
 
     public var body: any Geometry3D {
@@ -37,6 +37,7 @@ public struct Baseplate: Shape3D {
                     addMagnetSlots: options.contains(.magnets),
                     addTabs: options.contains(.tabs),
                     addScrewHoles: options.contains(.screws)
+                    addCenterMagnetSlot: options.contains(.magnetCenter)
                 )
             }
             socketLayer
@@ -73,5 +74,11 @@ public struct Baseplate: Shape3D {
         /// Four 6.5mm diameter, 2.2mm deep magnet slots are placed in each grid cell,
         /// near the corners. Implicitly enables the foundation layer.
         case magnets
+
+        /// Adds a single centered slot for magnets in each grid cell.
+		///
+		/// One 6.5mm diameter, 2.2mm deep magnet slot is placed in the center
+		/// of each grid cell. Implicitly enables the foundation layer.
+		case magnetCenter
     }
 }

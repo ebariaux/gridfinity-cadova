@@ -24,7 +24,8 @@ public struct Bin: Shape3D {
     ///   - bottomThickness: The bottom thickness in millimeters (default: 0.6mm).
     ///   - innerBottomCornerRadius: The inner bottom corner fillet radius (default: 1.0mm).
     ///   - withStackingLip: Whether to add a stacking lip for nesting.
-    ///   - withMagnet: Add magnet slots to the bottom of the bin
+    ///   - withMagnet: Add magnet slots to the bottom of the corners of the bin
+    ///   - withCenteredMagnet: Add magnet slot in the center of the bottom of the bin
     public init(
         size: Units3D,
         wallThickness: Double = 1.0,
@@ -32,8 +33,10 @@ public struct Bin: Shape3D {
         innerBottomCornerRadius: Double = 1.0,
         withStackingLip: Bool = false,
         withMagnet: Bool = false
+  		withCenteredMagnet: Bool = false
+
     ) {
-        self.block = Block(size: Units2D(x: size.x, y: size.y), height: Double(size.z) * Units3D.size.z, withMagnet: withMagnet)
+        self.block = Block(size: Units2D(x: size.x, y: size.y), height: Double(size.z) * Units3D.size.z, withMagnet: withMagnet,withCenteredMagnet: withCenteredMagnet)
         self.useStackingLip = withStackingLip
         self.wallThickness = wallThickness
         self.bottomThickness = bottomThickness
