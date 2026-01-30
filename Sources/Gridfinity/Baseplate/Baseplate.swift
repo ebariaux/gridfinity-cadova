@@ -36,7 +36,7 @@ public struct Baseplate: Shape3D {
                     shape: socketLayer.projected(),
                     addMagnetSlots: options.contains(.magnets),
                     addTabs: options.contains(.tabs),
-                    addScrewHoles: options.contains(.screws)
+                    addScrewHoles: options.contains(.screws),
                     addCenterMagnetSlot: options.contains(.magnetCenter)
                 )
             }

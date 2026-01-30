@@ -42,9 +42,6 @@ public struct Block: Shape3D {
                 }
 				if useCenteredMagnet {
 					Cylinder(diameter: magnetDiameter, height: magnetDepth)
-						.translated(x: -Units2D.size.x / 2 , y: Units2D.size.y / 2)
-						.translated(x: Units2D.size.x / 2, y: -Units2D.size.x / 2)
-						
 				}
             }
             .repeated(along: .x, step: Units2D.size.x, count: size.x)

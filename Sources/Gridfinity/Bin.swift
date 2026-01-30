@@ -32,7 +32,7 @@ public struct Bin: Shape3D {
         bottomThickness: Double = 0.6,
         innerBottomCornerRadius: Double = 1.0,
         withStackingLip: Bool = false,
-        withMagnet: Bool = false
+        withMagnet: Bool = false,
   		withCenteredMagnet: Bool = false
 
     ) {
