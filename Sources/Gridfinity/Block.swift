@@ -10,39 +10,38 @@ public struct Block: Shape3D {
     public let size: Units2D
     /// The total height of the block in millimeters.
     public let height: Double
-    public let useMagnet: Bool
-	public let useCenteredMagnet: Bool
-	
+    /// The positions where magnet slots should be added.
+    public let magnetSlots: Set<MagnetPosition>
+
     let base = Base()
-    
-	let magnetInset = 8.0
-	let magnetDiameter = 6.5
-	let magnetDepth = 2.2
-	let magnetMargin = 3.0
-    
-    public init(size: Units2D, height: Double, withMagnet: Bool = false, withCenteredMagnet: Bool = false) {
+
+    let magnetInset = 8.0
+    let magnetDiameter = 6.5
+    let magnetDepth = 2.2
+    let magnetMargin = 3.0
+
+    public init(size: Units2D, height: Double, magnetSlots: Set<MagnetPosition> = []) {
         self.size = size
         self.height = height
-        self.useMagnet = withMagnet
-		self.useCenteredMagnet = withCenteredMagnet
+        self.magnetSlots = magnetSlots
     }
 
-    public init(size: Units3D) {
-        self.init(size: size.base, height: Double(size.z) * Units3D.size.z)
+    public init(size: Units3D, magnetSlots: Set<MagnetPosition> = []) {
+        self.init(size: size.base, height: Double(size.z) * Units3D.size.z, magnetSlots: magnetSlots)
     }
 
     public var body: any Geometry3D {
         base
             .subtracting {
-                if useMagnet {
+                if magnetSlots.contains(.corners) {
                     Cylinder(diameter: magnetDiameter, height: magnetDepth)
                         .translated(x: magnetInset, y: magnetInset, z: 0)
                         .translated(x: -Units2D.size.x / 2, y: -Units2D.size.x / 2)
                         .symmetry(over: .xy)
                 }
-				if useCenteredMagnet {
-					Cylinder(diameter: magnetDiameter, height: magnetDepth)
-				}
+                if magnetSlots.contains(.centered) {
+                    Cylinder(diameter: magnetDiameter, height: magnetDepth)
+                }
             }
             .repeated(along: .x, step: Units2D.size.x, count: size.x)
             .repeated(along: .y, step: Units2D.size.y, count: size.y)

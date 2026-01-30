@@ -14,8 +14,8 @@ public struct Bin: Shape3D {
     public let bottomThickness: Double
     /// The fillet radius for the inner bottom corners.
     public let innerBottomCornerRadius: Double
-    /// Whether to include a stacking lip on top for nesting bins.
-    public let useStackingLip: Bool
+    /// Configuration options for this bin.
+    public let options: Set<Option>
 
     /// Creates a new bin with the specified dimensions.
     /// - Parameters:
@@ -23,21 +23,20 @@ public struct Bin: Shape3D {
     ///   - wallThickness: The wall thickness in millimeters (default: 1.0mm).
     ///   - bottomThickness: The bottom thickness in millimeters (default: 0.6mm).
     ///   - innerBottomCornerRadius: The inner bottom corner fillet radius (default: 1.0mm).
-    ///   - withStackingLip: Whether to add a stacking lip for nesting.
-    ///   - withMagnet: Add magnet slots to the bottom of the corners of the bin
-    ///   - withCenteredMagnet: Add magnet slot in the center of the bottom of the bin
+    ///   - options: Configuration options for magnets and stacking lip.
     public init(
         size: Units3D,
         wallThickness: Double = 1.0,
         bottomThickness: Double = 0.6,
         innerBottomCornerRadius: Double = 1.0,
-        withStackingLip: Bool = false,
-        withMagnet: Bool = false,
-  		withCenteredMagnet: Bool = false
-
+        options: Set<Option> = []
     ) {
-        self.block = Block(size: Units2D(x: size.x, y: size.y), height: Double(size.z) * Units3D.size.z, withMagnet: withMagnet,withCenteredMagnet: withCenteredMagnet)
-        self.useStackingLip = withStackingLip
+        self.block = Block(
+            size: Units2D(x: size.x, y: size.y),
+            height: Double(size.z) * Units3D.size.z,
+            magnetSlots: Set(options.compactMap(\.magnetPosition))
+        )
+        self.options = options
         self.wallThickness = wallThickness
         self.bottomThickness = bottomThickness
         self.innerBottomCornerRadius = innerBottomCornerRadius
@@ -53,12 +52,39 @@ public struct Bin: Shape3D {
                         .translated(z: block.base.height + bottomThickness)
                 }
                 .adding {
-                    if useStackingLip {
+                    if options.contains(.stackingLip) {
                         StackingLip(shape: outline)
                             .translated(z: shell.height)
                     }
                 }
             }
+    }
+
+    /// Configuration options for bin features.
+    public enum Option: Hashable, Sendable {
+        /// Adds a stacking lip on top for nesting bins.
+        ///
+        /// The stacking lip allows bins to be stacked on top of each other.
+        case stackingLip
+
+        /// Adds slots for magnets in each grid cell of the bin's base.
+        ///
+        /// Magnet slots are 6.5mm in diameter and 2.2mm deep. The position parameter
+        /// determines where slots are placed within each cell:
+        /// - ``MagnetPosition/corners``: Four slots near the corners of each cell
+        /// - ``MagnetPosition/centered``: A single slot in the center of each cell
+        ///
+        /// Multiple magnet options can be combined to have both corner and centered slots.
+        case magnets (MagnetPosition)
+    }
+}
+
+internal extension Bin.Option {
+    var magnetPosition: MagnetPosition? {
+        switch self {
+        case .magnets (let position): return position
+        default: return nil
+        }
     }
 }
 

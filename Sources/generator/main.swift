@@ -14,21 +14,20 @@ await Project(packageRelative: "Models") {
     }
 
     // MARK: - Bins
-
     await Model("Bin 1x1x2") {
-        Bin(size: Units3D(x: 1, y: 1, z: 2), withStackingLip: true)
+        Bin(size: Units3D(x: 1, y: 1, z: 2), options: [.stackingLip])
     }
 
     await Model("Bin 2x2x3") {
-        Bin(size: Units3D(x: 2, y: 2, z: 3), withStackingLip: true)
+        Bin(size: Units3D(x: 2, y: 2, z: 3), options: [.stackingLip])
     }
 
     await Model("Bin 3x3x4") {
-        Bin(size: Units3D(x: 3, y: 3, z: 4), withStackingLip: true)
+        Bin(size: Units3D(x: 3, y: 3, z: 4), options: [.stackingLip])
     }
 
     await Model("Bin 4x5x3") {
-        Bin(size: Units3D(x: 4, y: 5, z: 3), withStackingLip: true)
+        Bin(size: Units3D(x: 4, y: 5, z: 3), options: [.stackingLip])
     }
 
     // MARK: - Baseplates

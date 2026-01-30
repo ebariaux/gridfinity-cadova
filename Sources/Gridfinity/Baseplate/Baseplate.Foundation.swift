@@ -6,10 +6,9 @@ extension Baseplate {
     struct Foundation: Shape3D {
         let size: Units2D
         let shape: any Geometry2D
-        let addMagnetSlots: Bool
+        let magnetSlots: Set<MagnetPosition>
         let addTabs: Bool
         let addScrewHoles: Bool
-        let addCenterMagnetSlot: Bool
 
         static let bolt = Bolt.hexSocketCountersunk(.m3, length: 6)
         static let nut = Nut.square(.m3, series: .thin)
@@ -27,7 +26,7 @@ extension Baseplate {
 
             shape
                 .adding {
-                    if addMagnetSlots {
+                    if magnetSlots.contains(.corners) {
                         Rectangle(magnetInset + magnetDiameter / 2 + magnetMargin)
                             .cuttingEdgeProfile(.fillet(radius: magnetDiameter / 2 + magnetMargin), on: .maxXmaxY)
                             .translated(x: -Units2D.size.x / 2, y: -Units2D.size.x / 2)
@@ -37,7 +36,7 @@ extension Baseplate {
                             .repeated(along: .y, step: Units2D.size.y, count: size.y)
                             .intersecting { outline }
                     }
-                    if addCenterMagnetSlot {
+                    if magnetSlots.contains(.centered) {
                         Rectangle(x: Units2D.size.x * 2.squareRoot() - 5, y: 2)
                             .aligned(at: .center)
                             .distributed(at: [45°, -45°])
@@ -47,7 +46,7 @@ extension Baseplate {
                             .repeated(along: .y, step: Units2D.size.y, count: size.y)
 					}
                 }
-                .rounded(insideRadius: addMagnetSlots ? 3 : nil)
+                .rounded(insideRadius: magnetSlots.contains(.corners) ? 3 : nil)
                 .extruded(height: height)
                 .adding {
                     if addTabs {
@@ -61,7 +60,7 @@ extension Baseplate {
                     }
                 }
                 .subtracting {
-                    if addMagnetSlots {
+                    if magnetSlots.contains(.corners) {
                         Cylinder(diameter: magnetDiameter, height: magnetDepth)
                             .translated(x: magnetInset, y: magnetInset, z: height - magnetDepth)
                             .translated(x: -Units2D.size.x / 2, y: -Units2D.size.x / 2)
@@ -70,7 +69,7 @@ extension Baseplate {
                             .repeated(along: .x, step: Units2D.size.x, count: size.x)
                             .repeated(along: .y, step: Units2D.size.y, count: size.y)
                     }
-                    if addCenterMagnetSlot {
+                    if magnetSlots.contains(.centered) {
 						Cylinder(diameter: magnetDiameter, height: magnetDepth)
 							.translated(Units2D.size / 2, z: height - magnetDepth)
 							.repeated(along: .x, step: Units2D.size.x, count: size.x)

@@ -16,7 +16,7 @@ public struct Baseplate: Shape3D {
     }
 
     private var needsFoundation: Bool {
-        options.intersection([.foundation, .magnets, .screws, .tabs, .magnetCenter]).isEmpty == false
+        options.contains(where: \.requiresFoundation)
     }
 
     public var body: any Geometry3D {
@@ -34,10 +34,9 @@ public struct Baseplate: Shape3D {
                 Foundation(
                     size: size,
                     shape: socketLayer.projected(),
-                    addMagnetSlots: options.contains(.magnets),
+                    magnetSlots: Set(options.compactMap(\.magnetPosition)),
                     addTabs: options.contains(.tabs),
-                    addScrewHoles: options.contains(.screws),
-                    addCenterMagnetSlot: options.contains(.magnetCenter)
+                    addScrewHoles: options.contains(.screws)
                 )
             }
             socketLayer
@@ -71,14 +70,28 @@ public struct Baseplate: Shape3D {
 
         /// Adds slots for magnets in each grid cell.
         ///
-        /// Four 6.5mm diameter, 2.2mm deep magnet slots are placed in each grid cell,
-        /// near the corners. Implicitly enables the foundation layer.
-        case magnets
+        /// Magnet slots are 6.5mm in diameter and 2.2mm deep. The position parameter
+        /// determines where slots are placed within each cell:
+        /// - ``MagnetPosition/corners``: Four slots near the corners of each cell
+        /// - ``MagnetPosition/centered``: A single slot in the center of each cell
+        ///
+        /// Multiple magnet options can be combined to have both corner and centered slots.
+        /// Implicitly enables the foundation layer.
+        case magnets (MagnetPosition)
+    }
+}
 
-        /// Adds a single centered slot for magnets in each grid cell.
-		///
-		/// One 6.5mm diameter, 2.2mm deep magnet slot is placed in the center
-		/// of each grid cell. Implicitly enables the foundation layer.
-		case magnetCenter
+internal extension Baseplate.Option {
+    var magnetPosition: MagnetPosition? {
+        switch self {
+        case .magnets (let position): return position
+        default: return nil
+        }
+    }
+
+    var requiresFoundation: Bool {
+        switch self {
+        case .foundation, .tabs, .screws, .magnets: return true
+        }
     }
 }

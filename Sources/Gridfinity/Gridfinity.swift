@@ -50,3 +50,20 @@ public struct Units3D: Hashable, Sendable {
     /// The physical size of one Gridfinity 3D grid unit (42mm × 42mm × 7mm).
     public static let size = Vector3D(Units2D.size, z: 7)
 }
+
+/// The position of magnet slots within a Gridfinity grid cell.
+///
+/// Used with ``Baseplate/Option/magnets(_:)`` to specify where magnet slots
+/// should be placed in baseplates.
+public enum MagnetPosition: Sendable, Hashable {
+    /// Four magnet slots positioned near the corners of each grid cell.
+    ///
+    /// This is the standard Gridfinity magnet placement, compatible with bins
+    /// that have corner magnets.
+    case corners
+
+    /// A single magnet slot positioned in the center of each grid cell.
+    ///
+    /// Useful for bins with a single centered magnet.
+    case centered
+}
