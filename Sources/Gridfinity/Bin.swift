@@ -5,7 +5,7 @@ import Cadova
 /// A bin is created by hollowing out a block, leaving walls of configurable
 /// thickness. Bins can optionally include a stacking lip that allows them
 /// to be stacked on top of each other without a baseplate.
-public struct Bin: Shape3D {
+public struct Bin: Geometry3D {
     /// The underlying block that defines the bin's outer dimensions.
     public let block: Block
     /// The thickness of the bin walls in millimeters.
@@ -90,7 +90,7 @@ internal extension Bin.Option {
 
 extension Bin {
     // A lip profile that allows bins to stack on top of each other.
-    struct StackingLip: Shape3D {
+    struct StackingLip: Geometry3D {
         let shape: any Geometry2D
 
         var body: any Geometry3D {
@@ -109,7 +109,7 @@ extension Bin {
                     }
 
                     Polygon(profile)
-                        .swept(along: path)
+                        .swept(along: path, pointing: .negativeY, toward: .direction(.negativeZ))
                         .translated(z: -largeChamferDepth - smallChamferDepth)
                 }
             }

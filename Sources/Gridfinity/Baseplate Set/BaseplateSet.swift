@@ -11,7 +11,7 @@ import Cadova
 /// - Front/back padding spacers for non-grid-aligned depth
 /// - Side padding spacers for non-grid-aligned width
 ///
-public struct BaseplateSet: Shape3D {
+public struct BaseplateSet: Geometry3D {
     let footprint: Vector2D
     let printbedSize: Vector2D
     let frontPadding: Double

@@ -9,8 +9,8 @@ let package = Package(
         .executable(name: "generator", targets: ["generator"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/tomasf/Cadova.git", .upToNextMinor(from: "0.4.2")),
-        .package(url: "https://github.com/tomasf/Helical.git", .upToNextMinor(from: "0.4.3")),
+        .package(url: "https://github.com/tomasf/Cadova.git", .upToNextMinor(from: "0.9.2")),
+        .package(url: "https://github.com/tomasf/Helical.git", .upToNextMinor(from: "1.0.4")),
     ],
     targets: [
         .target(

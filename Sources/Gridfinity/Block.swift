@@ -5,7 +5,7 @@ import Cadova
 /// A block consists of a grid of interconnected base units that form
 /// the characteristic Gridfinity profile, allowing it to securely attach
 /// to baseplates.
-public struct Block: Shape3D {
+public struct Block: Geometry3D {
     /// The size of the block in grid units.
     public let size: Units2D
     /// The total height of the block in millimeters.
@@ -67,7 +67,7 @@ public struct Block: Shape3D {
     }
 
     // A single Gridfinity base unit with the characteristic interlocking profile.
-    struct Base: Shape3D {
+    struct Base: Geometry3D {
         private let cornerRadius = 3.75
         private let smallChamferDepth = 0.8
         private let largeChamferDepth = 2.15
@@ -98,7 +98,7 @@ public struct Block: Shape3D {
             Polygon(profile)
                 .flipped(along: .x)
                 .aligned(at: .minX)
-                .swept(along: outerShape)
+                .swept(along: outerShape, pointing: .negativeY, toward: .direction(.negativeZ))
 
             Rectangle(effectiveWidth - 2 * cornerRadius + 0.3)
                 .aligned(at: .center)
