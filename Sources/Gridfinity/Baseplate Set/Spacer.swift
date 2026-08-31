@@ -3,7 +3,7 @@ import Helical
 import Foundation
 
 // A filler piece that bridges gaps between baseplates and enclosure edges.
-struct Spacer: Shape3D {
+struct Spacer: Geometry3D {
     let size: Vector3D
     let bottomChamferDepth: Double
     let interlockingSide: Rectangle.Side
@@ -18,7 +18,7 @@ struct Spacer: Shape3D {
         let offset = (size.xy[interlockingAxis] - interlockingLength) * interlockingAlignment.fraction + interlockingOffset
         let tab = Baseplate.Foundation.Tab(height: Units3D.size.z)
 
-        let clearanceHole = Baseplate.Foundation.bolt.clearanceHole(depth: depth, recessedHead: true)
+        let clearanceHole = Baseplate.Foundation.bolt.clearanceHole(depth: depth, entry: .recessedHead)
             .rotated(x: -90°)
             .translated(x: Units2D.size.x / 2, y: -4, z: Units3D.size.z / 2)
 

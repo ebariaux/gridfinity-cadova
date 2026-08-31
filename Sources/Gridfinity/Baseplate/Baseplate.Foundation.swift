@@ -3,7 +3,7 @@ import Helical
 
 extension Baseplate {
     // The foundation layer with interlocking tabs and fastener holes.
-    struct Foundation: Shape3D {
+    struct Foundation: Geometry3D {
         let size: Units2D
         let shape: any Geometry2D
         let magnetSlots: Set<MagnetPosition>
@@ -18,7 +18,7 @@ extension Baseplate {
             let wallThickness = Socket().wallThickness
             let tab = Tab(height: height)
 
-            let outline = shape.filled()
+            let outline = shape.fillingHoles()
             let magnetInset = 8.0
             let magnetDiameter = 6.5
             let magnetDepth = 2.2
@@ -87,7 +87,7 @@ extension Baseplate {
                     }
 
                     if addScrewHoles {
-                        let clearanceHole = Self.bolt.clearanceHole(recessedHead: true)
+                        let clearanceHole = Self.bolt.clearanceHole(entry: .recessedHead)
                             .within(z: (-1)...)
                             .rotated(y: 90°)
                             .translated(x: 0.2 - wallThickness, z: height / 2)
@@ -106,7 +106,7 @@ extension Baseplate {
                         let nutTrap = Self.nut.nutTrap(depthClearance: 1)
                             .translated(z: -1)
                             .adding {
-                                ClearanceHole(diameter: Self.bolt.thread.majorDiameter, depth: wallThickness + 1, edgeProfile: nil)
+                                ClearanceHole(diameter: Self.bolt.thread.majorDiameter, depth: wallThickness + 1)
                             }
                             .rotated(y: 90°)
                             .translated(z: height / 2)
@@ -128,7 +128,7 @@ extension Baseplate {
 
 extension Baseplate.Foundation {
     // An interlocking tab used to connect adjacent baseplate foundations.
-    struct Tab: Shape2D {
+    struct Tab: Geometry2D {
         let height: Double
 
         private var shape: BezierPath2D {

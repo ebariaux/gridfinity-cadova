@@ -3,7 +3,7 @@ import Helical
 
 extension Baseplate {
     // A socket cavity that accepts Gridfinity block base units.
-    struct Socket: Shape3D {
+    struct Socket: Geometry3D {
         let cornerRadius = 4.0
         var height: Double { wallThickness + verticalPartLength }
         var wallThickness: Double { smallChamferDepth + largeChamferDepth }
@@ -27,7 +27,7 @@ extension Baseplate {
             Polygon(profile)
                 .aligned(at: .maxX)
                 .flipped(along: .x)
-                .swept(along: BezierPath.roundedRectangle(size: Units2D.size, cornerRadius: cornerRadius))
+                .swept(along: BezierPath.roundedRectangle(size: Units2D.size, cornerRadius: cornerRadius), pointing: .negativeY, toward: .direction(.negativeZ))
                 .simplified()
                 .adding {
                     Rectangle(Units2D.size.x - cornerRadius * 2 + 0.3)

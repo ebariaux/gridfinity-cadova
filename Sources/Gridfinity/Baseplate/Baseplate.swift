@@ -6,7 +6,7 @@ import Helical
 /// Baseplates form the foundation of a Gridfinity storage system. They feature
 /// a grid of sockets that blocks snap into, and can optionally include an
 /// interlocking foundation layer for connecting multiple baseplates together.
-public struct Baseplate: Shape3D {
+public struct Baseplate: Geometry3D {
     let size: Units2D
     let options: Set<Option>
 
